@@ -15,13 +15,20 @@ export async function synthesize(systemTraits: StructuredTraits[]): Promise<stri
     contents: buildSynthesisPrompt(systemTraits),
     config: {
       systemInstruction: SYSTEM_PROMPT,
-      maxOutputTokens: 2048,
+      // gemini-3.5-flash has thinking enabled by default, and thinking tokens are
+      // deducted from maxOutputTokens before any visible text is produced — a low
+      // ceiling here truncates the narrative mid-sentence rather than erroring.
+      maxOutputTokens: 8192,
     },
   });
 
   const text = response.text;
   if (!text) {
     throw new Error("Gemini response contained no text content");
+  }
+  const finishReason = response.candidates?.[0]?.finishReason;
+  if (finishReason === "MAX_TOKENS") {
+    throw new Error("Gemini response was truncated (hit maxOutputTokens before finishing)");
   }
   return text;
 }
