@@ -2,14 +2,14 @@
 
 A self-discovery web app that blends 5 fortune-telling / divination systems — Western astrology, Chinese Four Pillars (BaZi), Purple Star Astrology (Zi Wei Dou Shu), Qi Men Dun Jia, and numerology — into one synthesized narrative reading.
 
-Enter a birth date, time, and place; the app runs all 5 systems' calculations, extracts structured traits from each, and uses Claude to weave them into a single coherent reading.
+Enter a birth date, time, and place; the app runs all 5 systems' calculations, extracts structured traits from each, and uses Gemini to weave them into a single coherent reading.
 
 ## Stack
 
 - Next.js (App Router) + TypeScript
 - `lunar-typescript` (BaZi), `iztro` (Zi Wei Dou Shu), `circular-natal-horoscope-js` (Western astrology) — see `lib/systems/qimen` for the custom Qi Men Dun Jia board logic
 - `geo-tz` + `luxon` for timezone/true-solar-time resolution
-- `@anthropic-ai/sdk` for narrative synthesis
+- `@google/genai` for narrative synthesis
 - Vitest for calculator unit tests
 
 ## Getting Started
@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Set `ANTHROPIC_API_KEY` in your environment for the synthesis step to work.
+Set `GEMINI_API_KEY` in your environment for the synthesis step to work.
 
 Open [http://localhost:3000](http://localhost:3000).
 

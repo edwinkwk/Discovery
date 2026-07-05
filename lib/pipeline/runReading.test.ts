@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@/lib/synthesis/claudeClient", () => ({
-  getClaudeClient: () => ({
-    messages: {
-      create: vi.fn().mockResolvedValue({
-        content: [{ type: "text", text: "A synthesized narrative reading." }],
+vi.mock("@/lib/synthesis/geminiClient", () => ({
+  getGeminiClient: () => ({
+    models: {
+      generateContent: vi.fn().mockResolvedValue({
+        text: "A synthesized narrative reading.",
       }),
     },
   }),

@@ -1,23 +1,27 @@
 import type { StructuredTraits } from "@/types/reading";
-import { getClaudeClient } from "./claudeClient";
+import { getGeminiClient } from "./geminiClient";
 import { buildSynthesisPrompt, SYSTEM_PROMPT } from "./buildPrompt";
+
+const MODEL = "gemini-3.5-flash";
 
 export async function synthesize(systemTraits: StructuredTraits[]): Promise<string> {
   if (systemTraits.length === 0) {
     throw new Error("Cannot synthesize a reading with zero successful system results");
   }
 
-  const client = getClaudeClient();
-  const response = await client.messages.create({
-    model: "claude-opus-4-8",
-    max_tokens: 2048,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildSynthesisPrompt(systemTraits) }],
+  const client = getGeminiClient();
+  const response = await client.models.generateContent({
+    model: MODEL,
+    contents: buildSynthesisPrompt(systemTraits),
+    config: {
+      systemInstruction: SYSTEM_PROMPT,
+      maxOutputTokens: 2048,
+    },
   });
 
-  const textBlock = response.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
-    throw new Error("Claude response contained no text content");
+  const text = response.text;
+  if (!text) {
+    throw new Error("Gemini response contained no text content");
   }
-  return textBlock.text;
+  return text;
 }
